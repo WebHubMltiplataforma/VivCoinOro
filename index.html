@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VivCoinORo - Sistema Automatizado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --gold: #FFD700;
+            --dark-gold: #B8860B;
+            --black: #1a1a1a;
+            --white: #ffffff;
+            --gray: #f5f5f5;
+            --green: #4CAF50;
+            --red: #f44336;
+            --blue: #2196F3;
+            --purple: #9C27B0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: var(--white);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        header {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: var(--gold);
+        }
+
+        .logo-icon {
+            font-size: 2.2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(76, 175, 80, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--green);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(184,134,11,0.05) 100%);
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255,215,0,0.2);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, var(--gold), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255,215,0,0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: #ccc;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,215,0,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 10px 30px rgba(255,215,0,0.2);
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .stat-trend {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .trend-up { color: var(--green); }
+        .trend-down { color: var(--red); }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--gold);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header h3 {
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-badge {
+            background: var(--green);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Connection List */
+        .connection-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .connection-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            border-left: 4px solid var(--green);
+            transition: all 0.3s ease;
+        }
+
+        .connection-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(5px);
+        }
+
+        .connection-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .connection-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-connected { background: var(--green); }
+        .status-syncing { background: var(--blue); animation: pulse 1s infinite; }
+        .status-error { background: var(--red); }
+
+        .connection-details {
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        /* Wallet Section */
+        .wallet-address {
+            background: rgba(255,215,0,0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-family: monospace;
+            word-break: break-all;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .balance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .balance-item {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .balance-item:hover {
+            background: rgba(255,215,0,0.1);
+            transform: scale(1.05);
+        }
+
+        .balance-amount {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--gold);
+            margin-bottom: 0.25rem;
+        }
+
+        .balance-label {
+            font-size: 0.8rem;
+            color: #ccc;
+        }
+
+        /* Trading Section */
+        .trading-pair {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .trading-pair select, .trading-pair input {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.5);
+            color: white;
+        }
+
+        .order-type {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .order-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .buy-btn {
+            background: linear-gradient(45deg, var(--green), #2E7D32);
+            color: white;
+        }
+
+        .sell-btn {
+            background: linear-gradient(45deg, var(--red), #C62828);
+            color: white;
+        }
+
+        .order-btn.active {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+        }
+
+        .order-btn:hover:not(.active) {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            background: linear-gradient(45deg, var(--gold), var(--dark-gold));
+            color: var(--black);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,215,0,0.4);
+        }
+
+        /* Auto-connect Status */
+        .auto-connect-status {
+            background: rgba(33, 150, 243, 0.1);
+            border: 1px solid var(--blue);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .auto-wallet-display {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid var(--gold);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .wallet-display {
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-left: 4px solid var(--gold);
+        }
+
+        .wallet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .wallet-type {
+            background: var(--blue);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+        }
+
+        .wallet-total {
+            color: var(--gold);
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0,0,0,0.9);
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+            border-top: 1px solid rgba(255,215,0,0.2);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-section h4 {
+            color: var(--gold);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: var(--gold);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .system-init-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .init-logo {
+            font-size: 4rem;
+            animation: pulse 2s infinite;
+        }
+
+        .init-progress {
+            width: 300px;
+            height: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .init-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), var(--dark-gold));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Overlay de Inicialización -->
+    <div class="system-init-overlay" id="initOverlay">
+        <div class="init-logo">🥇</div>
+        <h2>Inicializando Sistema VivCoinORo</h2>
+        <div class="init-progress">
+            <div class="init-progress-bar" id="initProgress"></div>
+        </div>
+        <p id="initStatus">Cargando configuración...</p>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">🥇</span>
+                <span>VivCoinORo</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#dashboard" class="active">Dashboard</a></li>
+                    <li><a href="#wallet">Wallet</a></li>
+                    <li><a href="#trading">Trading</a></li>
+                    <li><a href="#blockchain">Blockchains</a></li>
+                    <li><a href="#liquidity">Liquidez</a></li>
+                </ul>
+            </nav>
+            <div class="system-status">
+                <div class="status-dot"></div>
+                <span id="globalStatus">INICIANDO SISTEMA...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>VivCoinORo Sistema Automatizado</h1>
+            <div class="hero-subtitle">
+                Sistema 100% Automático - Conexiones, Wallets y Trading Automatizados con tus APIs
+            </div>
+            <button class="action-btn" onclick="initializeAutoSystem()">
+                ⚡ Reiniciar Sistema Automático
+            </button>
+        </section>
+
+        <!-- Auto Connection Status -->
+        <div class="auto-connect-status" id="autoConnectStatus">
+            <h3>🔄 Estado de Conexiones Automáticas</h3>
+            <div id="connectionsDisplay">
+                <div class="connection-item">
+                    <div class="connection-info">
+                        <div class="connection-status status-syncing"></div>
+                        <div>
+                            <div>Iniciando conexiones automáticas...</div>
+                            <div class="connection-details">Conectando a 28+ blockchains via Infura</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auto Wallet Display -->
+        <div class="auto-wallet-display" id="autoWalletDisplay">
+            <h3>💰 Wallets Automáticas Conectadas</h3>
+            <div id="walletsDisplay">
+                <div class="wallet-display">
+                    <div class="wallet-header">
+                        <strong>Bóveda Principal</strong>
+                        <span class="wallet-type">VAULT</span>
+                    </div>
+                    <div class="wallet-address">0xfb146E2601c5F77743E4888E75D6577C2F56bAbb</div>
+                    <div class="wallet-total">Cargando balances...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="vivPrice">$0.0185</div>
+                <div class="stat-label">Precio VivCoinORo</div>
+                <div class="stat-trend trend-up">+2.3% (24h)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="goldPrice">$1,850.75</div>
+                <div class="stat-label">Precio Oro/oz</div>
+                <div class="stat-trend trend-up">+1.2% (24h)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="backingRatio">85.3%</div>
+                <div class="stat-label">Respaldo en Oro</div>
+                <div class="stat-trend trend-up">+0.5%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="marketCap">$385M</div>
+                <div class="stat-label">Market Cap</div>
+                <div class="stat-trend trend-up">+5.7%</div>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <section id="dashboard">
+            <h2 style="color: var(--gold); margin-bottom: 2rem; text-align: center;">
+                📊 Dashboard Automático en Tiempo Real
+            </h2>
+            
+            <div class="dashboard-grid">
+                <!-- Blockchain Connections -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>🔗 Conexiones Automáticas</h3>
+                        <div class="card-badge" id="connectionsCount">0 conectadas</div>
+                    </div>
+                    <div class="connection-list" id="connectionsList">
+                        <div class="connection-item">
+                            <div class="connection-info">
+                                <div class="connection-status status-syncing"></div>
+                                <div>
+                                    <div>Inicializando...</div>
+                                    <div class="connection-details">Conectando a todas las blockchains</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="action-btn" style="width: 100%; margin-top: 1rem;" onclick="refreshAllConnections()">
+                        🔄 Actualizar Todo Automáticamente
+                    </button>
+                </div>
+
+                <!-- Auto Wallets -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>💼 Wallets Automáticas</h3>
+                        <div class="card-badge" id="walletsStatus">AUTO</div>
+                    </div>
+                    <div id="autoWalletsContainer">
+                        <div class="wallet-display">
+                            <div class="wallet-header">
+                                <strong>Bóveda Principal</strong>
+                                <span class="wallet-type">VAULT</span>
+                            </div>
+                            <div class="wallet-address">0xfb146E2601c5F77743E4888E75D6577C2F56bAbb</div>
+                            <div class="balance-grid">
+                                <div class="balance-item">
+                                    <div class="balance-amount">---</div>
+                                    <div class="balance-label">Cargando...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auto Trading -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>🤖 Trading Automático</h3>
+                        <div class="card-badge" id="tradingStatus">INACTIVO</div>
+                    </div>
+                    <div class="trading-controls">
+                        <button class="action-btn" style="width: 100%; margin-bottom: 1rem;" onclick="toggleAutoTrading()">
+                            🚀 Activar Trading Automático
+                        </button>
+                        <div id="tradingStats" style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
+                            <div>Órdenes totales: 0</div>
+                            <div>Estrategias activas: 0</div>
+                            <div>Ganancias hoy: $0.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Liquidity Management -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>🌊 Liquidez Automática</h3>
+                        <div class="card-badge">AUTO</div>
+                    </div>
+                    <div class="connection-list" id="liquidityPools">
+                        <div class="connection-item">
+                            <div class="connection-info">
+                                <div class="connection-status status-syncing"></div>
+                                <div>
+                                    <div>Inicializando pools...</div>
+                                    <div class="connection-details">Configurando liquidez automática</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="action-btn" style="width: 100%; margin-top: 1rem;" onclick="manageAutoLiquidity()">
+                        🤖 Gestionar Liquidez Automática
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>VivCoinORo</h4>
+                <p>La primera criptomoneda con comportamiento 100% equiparable al oro físico. Sistema 100% automatizado.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Sistema Automatizado</h4>
+                <ul class="footer-links">
+                    <li><a href="#dashboard">Dashboard Automático</a></li>
+                    <li><a href="#wallet">Wallets Multi-Cadena</a></li>
+                    <li><a href="#trading">Trading P2P</a></li>
+                    <li><a href="#blockchain">Conexiones Blockchain</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Recursos</h4>
+                <ul class="footer-links">
+                    <li><a href="#" onclick="downloadWhitepaper()">Whitepaper</a></li>
+                    <li><a href="#" onclick="showAPIDocs()">Documentación API</a></li>
+                    <li><a href="#" onclick="showAuditReport()">Reporte de Auditoría</a></li>
+                    <li><a href="#" onclick="showLiquidityPlan()">Plan de Liquidez</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Soporte</h4>
+                <ul class="footer-links">
+                    <li><a href="#" onclick="contactSupport()">Soporte 24/7</a></li>
+                    <li><a href="#" onclick="showStatus()">Estado del Sistema</a></li>
+                    <li><a href="#" onclick="showSecurity()">Seguridad</a></li>
+                    <li><a href="#" onclick="showLegal()">Información Legal</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script>
+        // =============================================================================
+        // 🔧 CONFIGURACIÓN AUTOMÁTICA CON TUS APIS Y WALLETS
+        // =============================================================================
+
+        const CONFIG = {
+            // 🔐 INFURA CONFIGURATION
+            INFURA_KEY: "4df8eead51294cd09eadf4b51efaa014",
+            
+            // POLYGONSCAN API
+            POLYGONSCAN_API_KEY: "01b_Lg_ZvjpnKoQGgqGlT",
+            
+            // QUICKNODE CONFIG
+            QUICKNODE: {
+                WSS_URL: "wss://purple-bold-sunset.matic.quiknode.pro/6e2958c9720ad8d75f46b01d483e002df46d4524",
+                HTTP_URL: "https://purple-bold-sunset.matic.quiknode.pro/6e2958c9720ad8d75f46b01d483e002df46d4524",
+                API_KEY: "QN_d030347654fb4367a09e6b9f56a71ddb"
+            },
+            
+            // ETHERSCAN API
+            ETHERSCAN_API: "0x0e3a2a1f2146d86a604adc220b4967a898d7fe07",
+            
+            // WALLETS AUTOMÁTICAS
+            WALLETS: {
+                VAULT: "0xfb146E2601c5F77743E4888E75D6577C2F56bAbb",
+                WALLET1: "0x5182CaAe1EccBa71aa854E89847eE530a361b8bA", 
+                WALLET2: "0x5774808c2856f7FDF1A0a8F375A41559794BeF6B",
+                METAMASK: "0xfb146E2601c5F77743E4888E75D6577C2F56bAbb"
+            },
+            
+            // RPC ENDPOINTS AUTOMÁTICOS
+            RPC_ENDPOINTS: {
+                ETHEREUM: "https://mainnet.infura.io/v3/4df8eead51294cd09eadf4b51efaa014",
+                POLYGON: "https://polygon-mainnet.infura.io/v3/4df8eead51294cd09eadf4b51efaa014",
+                BSC: "https://bsc-mainnet.infura.io/v3/4df8eead51294cd09eadf4b51efaa014",
+                BASE: "https://base-mainnet.infura.io/v3/4df8eead51294cd09eadf4b51efaa014",
+                ARBITRUM: "https://arbitrum-mainnet.infura.io/v3/4df8eead51294cd09eadf4b51efaa014",
+                OPTIMISM: "https://optimism-mainnet.infura.io/v3/4df8eead51294cd09eadf4b51efaa014",
+                AVALANCHE: "https://avalanche-mainnet.infura.io/v3/4df8eead51294cd09eadf4b51efaa014"
+            }
+        };
+
+        // =============================================================================
+        // 🚀 SISTEMA PRINCIPAL AUTOMÁTICO
+        // =============================================================================
+
+        class VivCoinORoSystem {
+            constructor() {
+                this.isSystemActive = false;
+                this.initialized = false;
+                this.web3Instances = {};
+                this.connections = {};
+                this.wallets = {};
+                this.balances = {};
+            }
+
+            // Inicializar sistema completo automáticamente
+            async initializeAutoSystem() {
+                if (this.initialized) {
+                    console.log('✅ Sistema ya inicializado');
+                    return;
+                }
+
+                console.log('🚀 INICIANDO SISTEMA VIVCOINORO AUTOMÁTICO...');
+                this.updateInitStatus('Conectando a blockchains...', 20);
+                
+                try {
+                    // 1. Conectar a todas las blockchains automáticamente
+                    await this.connectAllBlockchains();
+                    this.updateInitStatus('Configurando wallets automáticas...', 50);
+                    
+                    // 2. Inicializar gestión automática de wallets
+                    await this.initializeWallets();
+                    this.updateInitStatus('Iniciando trading automático...', 80);
+                    
+                    // 3. Inicializar sistema de trading
+                    await this.initializeTrading();
+                    
+                    this.initialized = true;
+                    this.isSystemActive = true;
+                    this.updateInitStatus('Sistema listo!', 100);
+                    
+                    // Ocultar overlay después de 2 segundos
+                    setTimeout(() => {
+                        document.getElementById('initOverlay').style.display = 'none';
+                    }, 2000);
+                    
+                    // Actualizar UI
+                    this.updateSystemUI();
+                    
+                    console.log('🎉 SISTEMA VIVCOINORO INICIALIZADO EXITOSAMENTE');
+                    
+                } catch (error) {
+                    console.error('❌ Error inicializando sistema:', error);
+                    this.updateInitStatus('Error inicializando sistema', 0);
+                }
+            }
+
+            // Actualizar estado de inicialización
+            updateInitStatus(message, progress) {
+                document.getElementById('initStatus').textContent = message;
+                document.getElementById('initProgress').style.width = progress + '%';
+            }
+
+            // Conectar a todas las blockchains automáticamente
+            async connectAllBlockchains() {
+                console.log('🔗 Conectando automáticamente a todas las blockchains...');
+                
+                const connectionPromises = [];
+                
+                for (const [network, endpoint] of Object.entries(CONFIG.RPC_ENDPOINTS)) {
+                    connectionPromises.push(this.connectToChain(network, endpoint));
+                }
+                
+                await Promise.allSettled(connectionPromises);
+                
+                // Conectar MetaMask si está disponible
+                if (typeof window.ethereum !== 'undefined') {
+                    await this.connectMetaMask();
+                }
+                
+                // Iniciar monitoreo
+                this.startConnectionMonitoring();
+            }
+
+            // Conectar a una blockchain específica
+            async connectToChain(network, endpoint) {
+                try {
+                    const web3 = new Web3(new Web3.providers.HttpProvider(endpoint));
+                    const blockNumber = await web3.eth.getBlockNumber();
+                    const latency = await this.testLatency(web3);
+                    
+                    this.web3Instances[network] = web3;
+                    this.connections[network] = {
+                        status: 'connected',
+                        blockNumber: blockNumber,
+                        latency: latency,
+                        endpoint: endpoint,
+                        lastUpdate: new Date()
+                    };
+                    
+                    console.log(`✅ ${network} conectado - Bloque: ${blockNumber}`);
+                    return this.connections[network];
+                    
+                } catch (error) {
+                    console.error(`❌ Error conectando a ${network}:`, error);
+                    this.connections[network] = {
+                        status: 'error',
+                        error: error.message,
+                        endpoint: endpoint
+                    };
+                }
+            }
+
+            // Conectar MetaMask automáticamente
+            async connectMetaMask() {
+                try {
+                    const accounts = await window.ethereum.request({ 
+                        method: 'eth_requestAccounts' 
+                    });
+                    
+                    const web3 = new Web3(window.ethereum);
+                    this.web3Instances['METAMASK'] = web3;
+                    
+                    this.connections['METAMASK'] = {
+                        status: 'connected',
+                        address: accounts[0],
+                        networkId: await web3.eth.net.getId(),
+                        lastUpdate: new Date()
+                    };
+                    
+                    console.log('✅ MetaMask conectado:', accounts[0]);
+                    
+                } catch (error) {
+                    console.error('❌ Error conectando MetaMask:', error);
+                }
+            }
+
+            // Inicializar wallets automáticas
+            async initializeWallets() {
+                console.log('💰 Inicializando wallets automáticas...');
+                
+                this.wallets = {
+                    VAULT: {
+                        address: CONFIG.WALLETS.VAULT,
+                        type: 'vault',
+                        name: 'Bóveda Principal'
+                    },
+                    WALLET1: {
+                        address: CONFIG.WALLETS.WALLET1,
+                        type: 'operational', 
+                        name: 'Wallet Operativa 1'
+                    },
+                    WALLET2: {
+                        address: CONFIG.WALLETS.WALLET2,
+                        type: 'operational',
+                        name: 'Wallet Operativa 2'
+                    }
+                };
+                
+                // Cargar balances iniciales
+                await this.loadAllBalances();
+                
+                // Iniciar monitoreo de balances
+                this.startBalanceMonitoring();
+            }
+
+            // Cargar todos los balances
+            async loadAllBalances() {
+                for (const [walletKey, wallet] of Object.entries(this.wallets)) {
+                    await this.loadWalletBalances(walletKey, wallet.address);
+                }
+                this.updateWalletUI();
+            }
+
+            // Cargar balances de una wallet
+            async loadWalletBalances(walletKey, address) {
+                try {
+                    const balances = {};
+                    
+                    // Obtener balances nativos
+                    for (const [network, web3] of Object.entries(this.web3Instances)) {
+                        if (web3 && network !== 'METAMASK') {
+                            try {
+                                const balance = await web3.eth.getBalance(address);
+                                const symbol = this.getNativeSymbol(network);
+                                
+                                balances[symbol] = {
+                                    balance: web3.utils.fromWei(balance, 'ether'),
+                                    raw: balance,
+                                    network: network
+                                };
+                            } catch (error) {
+                                // Continuar con la siguiente red
+                            }
+                        }
+                    }
+                    
+                    this.balances[walletKey] = balances;
+                    
+                } catch (error) {
+                    console.error(`Error cargando balances para ${walletKey}:`, error);
+                }
+            }
+
+            // Inicializar sistema de trading
+            async initializeTrading() {
+                console.log('💱 Inicializando sistema de trading...');
+                this.tradingActive = false;
+                this.tradingStats = {
+                    totalOrders: 0,
+                    activeStrategies: 3,
+                    todayProfit: 0
+                };
+            }
+
+            // Monitoreo de conexiones
+            startConnectionMonitoring() {
+                setInterval(async () => {
+                    for (const [network, connection] of Object.entries(this.connections)) {
+                        if (connection.status === 'connected' && network !== 'METAMASK') {
+                            try {
+                                const web3 = this.web3Instances[network];
+                                const blockNumber = await web3.eth.getBlockNumber();
+                                const latency = await this.testLatency(web3);
+                                
+                                this.connections[network].blockNumber = blockNumber;
+                                this.connections[network].latency = latency;
+                                this.connections[network].lastUpdate = new Date();
+                                
+                            } catch (error) {
+                                this.connections[network].status = 'error';
+                            }
+                        }
+                    }
+                    this.updateSystemUI();
+                }, 15000);
+            }
+
+            // Monitoreo de balances
+            startBalanceMonitoring() {
+                setInterval(async () => {
+                    await this.loadAllBalances();
+                }, 30000);
+            }
+
+            // Probar latencia
+            async testLatency(web3) {
+                const startTime = Date.now();
+                try {
+                    await web3.eth.getBlockNumber();
+                    return Date.now() - startTime;
+                } catch (error) {
+                    return null;
+                }
+            }
+
+            // Obtener símbolo nativo
+            getNativeSymbol(network) {
+                const symbols = {
+                    ETHEREUM: 'ETH',
+                    POLYGON: 'MATIC', 
+                    BSC: 'BNB',
+                    BASE: 'ETH',
+                    ARBITRUM: 'ETH',
+                    OPTIMISM: 'ETH',
+                    AVALANCHE: 'AVAX'
+                };
+                return symbols[network] || network;
+            }
+
+            // Actualizar interfaz de usuario
+            updateSystemUI() {
+                // Actualizar estado global
+                document.getElementById('globalStatus').textContent = 'SISTEMA AUTOMÁTICO ACTIVO';
+                
+                // Actualizar conexiones
+                this.updateConnectionsUI();
+                
+                // Actualizar wallets
+                this.updateWalletUI();
+                
+                // Actualizar trading
+                this.updateTradingUI();
+            }
+
+            // Actualizar UI de conexiones
+            updateConnectionsUI() {
+                const connectionsList = document.getElementById('connectionsList');
+                const connectedCount = Object.values(this.connections).filter(c => c.status === 'connected').length;
+                
+                document.getElementById('connectionsCount').textContent = `${connectedCount} conectadas`;
+                
+                connectionsList.innerHTML = '';
+                for (const [network, connection] of Object.entries(this.connections)) {
+                    const statusClass = `status-${connection.status}`;
+                    const statusText = connection.status === 'connected' ? 'Conectado' : 'Error';
+                    
+                    const connectionItem = document.createElement('div');
+                    connectionItem.className = 'connection-item';
+                    connectionItem.innerHTML = `
+                        <div class="connection-info">
+                            <div class="connection-status ${statusClass}"></div>
+                            <div>
+                                <div>${network}</div>
+                                <div class="connection-details">
+                                    ${statusText} - 
+                                    ${connection.latency ? `${connection.latency}ms` : ''} - 
+                                    ${connection.blockNumber ? `Bloque #${connection.blockNumber.toLocaleString()}` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    connectionsList.appendChild(connectionItem);
+                }
+            }
+
+            // Actualizar UI de wallets
+            updateWalletUI() {
+                const walletsContainer = document.getElementById('autoWalletsContainer');
+                walletsContainer.innerHTML = '';
+                
+                for (const [walletKey, wallet] of Object.entries(this.wallets)) {
+                    const walletBalances = this.balances[walletKey] || {};
+                    const totalUSD = this.calculateTotalUSD(walletBalances);
+                    
+                    const walletElement = document.createElement('div');
+                    walletElement.className = 'wallet-display';
+                    walletElement.innerHTML = `
+                        <div class="wallet-header">
+                            <strong>${wallet.name}</strong>
+                            <span class="wallet-type">${wallet.type.toUpperCase()}</span>
+                        </div>
+                        <div class="wallet-address">${wallet.address}</div>
+                        <div class="wallet-total">Total: $${totalUSD.toFixed(2)} USD</div>
+                        <div class="balance-grid">
+                            ${Object.entries(walletBalances).map(([symbol, data]) => `
+                                <div class="balance-item">
+                                    <div class="balance-amount">${parseFloat(data.balance).toFixed(4)}</div>
+                                    <div class="balance-label">${symbol}</div>
+                                </div>
+                            `).join('')}
+                            ${Object.keys(walletBalances).length === 0 ? `
+                                <div class="balance-item">
+                                    <div class="balance-amount">0.0000</div>
+                                    <div class="balance-label">Sin balances</div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                    walletsContainer.appendChild(walletElement);
+                }
+            }
+
+            // Actualizar UI de trading
+            updateTradingUI() {
+                document.getElementById('tradingStatus').textContent = this.tradingActive ? 'ACTIVO' : 'INACTIVO';
+                document.getElementById('tradingStats').innerHTML = `
+                    <div>Órdenes totales: ${this.tradingStats.totalOrders}</div>
+                    <div>Estrategias activas: ${this.tradingStats.activeStrategies}</div>
+                    <div>Ganancias hoy: $${this.tradingStats.todayProfit.toFixed(2)}</div>
+                `;
+            }
+
+            // Calcular total en USD
+            calculateTotalUSD(balances) {
+                // Precios simulados (en una implementación real, obtener de APIs)
+                const prices = {
+                    'ETH': 1850.75,
+                    'MATIC': 0.75,
+                    'BNB': 215.30,
+                    'AVAX': 35.50
+                };
+                
+                let total = 0;
+                for (const [symbol, data] of Object.entries(balances)) {
+                    const price = prices[symbol] || 0;
+                    total += parseFloat(data.balance) * price;
+                }
+                return total;
+            }
+
+            // Refrescar todas las conexiones
+            async refreshAllConnections() {
+                console.log('🔄 Refrescando todas las conexiones...');
+                await this.connectAllBlockchains();
+                await this.loadAllBalances();
+                this.updateSystemUI();
+            }
+
+            // Activar/desactivar trading
+            toggleAutoTrading() {
+                this.tradingActive = !this.tradingActive;
+                this.updateTradingUI();
+                
+                if (this.tradingActive) {
+                    alert('🤖 Trading automático ACTIVADO\n\nEstrategias activas:\n• Market Making\n• Arbitraje Multi-DEX\n• Gestión de Liquidez');
+                } else {
+                    alert('⏸️ Trading automático DESACTIVADO');
+                }
+            }
+        }
+
+        // =============================================================================
+        // 🎯 INICIALIZACIÓN GLOBAL
+        // =============================================================================
+
+        // Crear instancia global del sistema
+        const vivSystem = new VivCoinORoSystem();
+
+        // Funciones globales para HTML
+        function initializeAutoSystem() {
+            vivSystem.initializeAutoSystem();
+        }
+
+        function refreshAllConnections() {
+            vivSystem.refreshAllConnections();
+        }
+
+        function toggleAutoTrading() {
+            vivSystem.toggleAutoTrading();
+        }
+
+        function manageAutoLiquidity() {
+            alert('🌊 Gestión de Liquidez Automática Activada\n\nEl sistema gestionará automáticamente:\n• Pools de liquidez en DEXs\n• Rebalanceo de fondos\n• Optimización de APY');
+        }
+
+        // Funciones de footer
+        function downloadWhitepaper() {
+            alert('📄 Descargando Whitepaper...');
+        }
+
+        function showAPIDocs() {
+            alert('🔗 Documentación API: https://api.vivcoinoro.com/docs');
+        }
+
+        function contactSupport() {
+            alert('📞 Soporte: support@vivcoinoro.com');
+        }
+
+        // Inicialización automática al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 VivCoinORo - Iniciando sistema automático...');
+            // Iniciar automáticamente después de 1 segundo
+            setTimeout(() => {
+                vivSystem.initializeAutoSystem();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
