@@ -1,0 +1,11 @@
+{
+  "auto_connect": true,
+  "networks": {
+    "bitcoin": {"rpc_url": "auto", "network": "mainnet"},
+    "ethereum": {"web3_provider": "auto", "chain_id": 1},
+    "binance": {"api_key": "auto", "network": "mainnet"},
+    "solana": {"rpc_url": "auto", "network": "mainnet"}
+  },
+  "health_check_interval": 60,
+  "auto_reconnect": true
+}

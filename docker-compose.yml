@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  vivcoinoro-core:
+    build: .
+    ports:
+      - "8080:8080"
+      - "5000:5000"
+    environment:
+      - NETWORK=mainnet
+      - AUTO_CONNECT=true
+      - LIQUIDITY_AUTO=true
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+    restart: unless-stopped
+
+  blockchain-nodes:
+    image: bitcoin-core:23.0
+    ports:
+      - "8332:8332"
+    volumes:
+      - bitcoin-data:/data
+    restart: unless-stopped
+
+  liquidity-bot:
+    build: .
+    command: python liquidity_engine.py
+    environment:
+      - TRADING_PAIRS=VIV/USDT,VIV/BTC,VIV/ETH
+    restart: unless-stopped
+
+  price-oracle:
+    build: .
+    command: python oracle_gold_price.py
+    restart: unless-stopped
+
+volumes:
+  bitcoin-data:
+  wallet-backups:
